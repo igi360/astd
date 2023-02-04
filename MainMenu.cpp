@@ -8,7 +8,7 @@ MainMenu::MainMenu(float width, float height)
 	//Play
 	mainMenu[0].setFont(font);
 	mainMenu[0].setFillColor(Color::White);
-	mainMenu[0].setString("Normal Mode");
+	mainMenu[0].setString("Play");
 	mainMenu[0].setCharacterSize(70);
 	mainMenu[0].setPosition(400, 300);
 
