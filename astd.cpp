@@ -1,9 +1,10 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <time.h>
 #include <list>
-//#include <iostream>  //<------------streams hihi
+#include <iostream>  //<------------streams hihi
 #include "MainMenu.h"
 #include <stdexcept>
+#include <fstream>
 
 using namespace sf;
 using namespace std;
@@ -13,6 +14,8 @@ const int H = 800;
 
 float deg = 0.017453f;//convrsion from radians coef
 
+int score = 0;
+int previousScore;
 
 class Animation
 {
@@ -227,16 +230,16 @@ bool isCollide(Entity* a, Entity* b)
 
 int main()
 {
-    
+
     srand(time(0));
     //rendering main window
     RenderWindow MENU(VideoMode(1200, 800), "Main Menu", Style::Default);
     MainMenu mainMenu(MENU.getSize().x, MENU.getSize().y);
 
-    
-   
-//space for loading graphics
-    Texture t1, t2, t3, t4, t5, t6, t7,t8;
+
+
+    //space for loading graphics
+    Texture t1, t2, t3, t4, t5, t6, t7, t8;
     t1.loadFromFile("spaceship.png");
     t2.loadFromFile("background.jpg");
     t3.loadFromFile("explosions/type_C.png");
@@ -246,9 +249,17 @@ int main()
     t6.loadFromFile("rock_small.png");
     t7.loadFromFile("explosions/type_B.png");
     t8.loadFromFile("MainMenuBackground.jpg");
-
+    Font fnt;
+    fnt.loadFromFile("arial.ttf");
     t1.setSmooth(true);
     t2.setSmooth(true);
+
+    Text HighScore;
+    HighScore.setFont(fnt);
+    HighScore.setString("Value: " + to_string(previousScore));
+    HighScore.setCharacterSize(24);
+    HighScore.setFillColor(Color::White);
+
     //Animations stuff
     Sprite background(t2);
     Sprite MenuBackground(t8);
@@ -270,7 +281,7 @@ int main()
         a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
         entities.push_back(a);
     }
-    int u1=1, u2 = 1;
+    int u1 = 1, u2 = 1;
     try                                                //<----------------eception catch
     {
         cout << divide(u1, u2) << std::endl;
@@ -284,7 +295,7 @@ int main()
     entities.push_back(p);
     bullet mode;
     int newValue;
-    
+
     /////main loop/////
     while (MENU.isOpen()) {
         Event event;
@@ -311,16 +322,16 @@ int main()
 
                     int x = mainMenu.MainMenuPressed();
 
-                    if (x==0) {
-                       
-                       // bullet.update *g = 1;
-                       // g ->update();
-                          // g=inputValue
-                        
-                        /*if (x == 0)
-                        {
-                            mode.setValue(0);
-                        }*/
+                    if (x == 0) {
+
+                        // bullet.update *g = 1;
+                        // g ->update();
+                           // g=inputValue
+
+                         /*if (x == 0)
+                         {
+                             mode.setValue(0);
+                         }*/
                         while (Play.isOpen())
                         {
                             Event aevent;
@@ -333,7 +344,7 @@ int main()
                                 {
                                     if (aevent.key.code == Keyboard::Escape)
                                     {
-                                        int GameMode = 0;
+
                                         Play.close();
                                     }
 
@@ -346,7 +357,7 @@ int main()
                                 }
                             }
                             if (x == 1) {
-                                
+
                             }
                             if (Keyboard::isKeyPressed(Keyboard::Right)) p->angle += 3;
                             if (Keyboard::isKeyPressed(Keyboard::Left))  p->angle -= 3;
@@ -360,6 +371,39 @@ int main()
                                     if (a->name == "asteroid" && b->name == "bullet")
                                         if (isCollide(a, b))
                                         {
+
+                                            score = score + 50;
+                                            ifstream input_file("score.txt");
+
+                                            if (input_file.is_open())
+                                            {
+                                                input_file >> previousScore;
+
+                                                input_file.close();
+                                            }
+                                            else
+                                            {
+                                                cerr << "Error opening file" << endl;
+                                                return 1;
+                                            }
+
+                                            //std::cout << "a: " << a << ", b: " << b << ", c: " << c << std::endl;
+
+                                            if (score > previousScore)
+                                            {
+                                                ofstream output_file("score.txt", ofstream::trunc);
+
+                                                if (output_file.is_open())
+                                                {
+                                                    output_file << score;
+                                                    output_file.close();
+                                                }
+                                                else
+                                                {
+                                                    cerr << "Error opening file" << endl;
+                                                    return 1;
+                                                }
+                                            }
                                             a->life = false;
                                             b->life = false;
 
@@ -422,84 +466,89 @@ int main()
                             }
 
 
-                            //draw
-
-                            Play.draw(background);
-                            for (auto i : entities) i->draw(Play);
-                            Play.display();
-                            Options.close();
-                            About.close();
-                            Play.clear();
                         }
+                        
+                        //draw
 
+                        Play.draw(background);
+                        for (auto i : entities) i->draw(Play);
+                        Play.display();
+                        Options.close();
+                        About.close();
+                        Play.clear();
                     }
-                    /* if (x == 0) {
-                        int GameMode = 0;
-                        while (Options.isOpen())
+
+                }
+                /* if (x == 0) {
+                    int GameMode = 0;
+                    while (Options.isOpen())
+                    {
+                        Event aevent;
+                        while (Options.pollEvent(aevent))
                         {
-                            Event aevent;
-                            while (Options.pollEvent(aevent))
+                            if (aevent.type == Event::Closed) {
+                                Options.close();
+                            }
+                            if (aevent.type == Event::KeyPressed)
                             {
-                                if (aevent.type == Event::Closed) {
+                                if (aevent.key.code == Keyboard::Escape)
+                                {
                                     Options.close();
                                 }
-                                if (aevent.type == Event::KeyPressed)
-                                {
-                                    if (aevent.key.code == Keyboard::Escape)
-                                    {
-                                        Options.close();
-                                    }
-                                }
                             }
-                            Options.clear();
-                            About.close();
-                            Play.close();
-                            Options.draw(MenuBackground);
-                            Options.display();
-                            
                         }
-                       
-                        break;
+                        Options.clear();
+                        About.close();
+                        Play.close();
+                        Options.draw(MenuBackground);
+                        Options.display();
+
                     }
-                    x == 1;*/
-                    if (x == 1) {
-                        while (About.isOpen())
+
+                    break;
+                }
+                x == 1;*/
+                if (x == 1) {
+                    while (About.isOpen())
+                    {
+                        Event aevent;
+                        while (About.pollEvent(aevent))
                         {
-                            Event aevent;
-                            while (About.pollEvent(aevent))
+                            if (aevent.type == Event::Closed) {
+                                About.close();
+                            }
+                            if (aevent.type == Event::KeyPressed)
                             {
-                                if (aevent.type == Event::Closed) {
+                                if (aevent.key.code == Keyboard::Escape)
+                                {
                                     About.close();
                                 }
-                                if (aevent.type == Event::KeyPressed)
-                                {
-                                    if (aevent.key.code == Keyboard::Escape)
-                                    {
-                                        About.close();
-                                    }
-                                }
                             }
-                            Play.close();
-                            Options.clear();
-                            About.clear();
-                            About.draw(MenuBackground);
-                            About.display();
                         }
-                    }
-                    if (x == 2) {
-                        MENU.close();
-                        break;
+
+                        Play.close();
+                        //Options.clear();
+                        About.clear();
+                        About.draw(MenuBackground);
+                        About.draw(HighScore);
+                        About.display();
                     }
                 }
+                if (x == 2) {
+                    MENU.close();
+                    break;
+                }
             }
-            
         }
+
+
         MENU.clear();
         MENU.draw(MenuBackground);
         mainMenu.draw(MENU);
         MENU.display();
-
-
     }
+
+
     return 0;
+
 }
