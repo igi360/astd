@@ -356,9 +356,9 @@ int main()
                                     }
                                 }
                             }
-                            if (x == 1) {
+                            //if (x == 1) {
 
-                            }
+                            //}
                             if (Keyboard::isKeyPressed(Keyboard::Right)) p->angle += 3;
                             if (Keyboard::isKeyPressed(Keyboard::Left))  p->angle -= 3;
                             if (Keyboard::isKeyPressed(Keyboard::Up)) p->thrust = true;
@@ -387,7 +387,7 @@ int main()
                                                 return 1;
                                             }
 
-                                            //std::cout << "a: " << a << ", b: " << b << ", c: " << c << std::endl;
+
 
                                             if (score > previousScore)
                                             {
@@ -467,7 +467,7 @@ int main()
 
 
                         }
-                        
+
                         //draw
 
                         Play.draw(background);
@@ -478,76 +478,76 @@ int main()
                         Play.clear();
                     }
 
-                }
-                /* if (x == 0) {
-                    int GameMode = 0;
-                    while (Options.isOpen())
-                    {
-                        Event aevent;
-                        while (Options.pollEvent(aevent))
+
+                    /* if (x == 0) {
+                        int GameMode = 0;
+                        while (Options.isOpen())
                         {
-                            if (aevent.type == Event::Closed) {
-                                Options.close();
-                            }
-                            if (aevent.type == Event::KeyPressed)
+                            Event aevent;
+                            while (Options.pollEvent(aevent))
                             {
-                                if (aevent.key.code == Keyboard::Escape)
-                                {
+                                if (aevent.type == Event::Closed) {
                                     Options.close();
                                 }
-                            }
-                        }
-                        Options.clear();
-                        About.close();
-                        Play.close();
-                        Options.draw(MenuBackground);
-                        Options.display();
-
-                    }
-
-                    break;
-                }
-                x == 1;*/
-                if (x == 1) {
-                    while (About.isOpen())
-                    {
-                        Event aevent;
-                        while (About.pollEvent(aevent))
-                        {
-                            if (aevent.type == Event::Closed) {
-                                About.close();
-                            }
-                            if (aevent.type == Event::KeyPressed)
-                            {
-                                if (aevent.key.code == Keyboard::Escape)
+                                if (aevent.type == Event::KeyPressed)
                                 {
-                                    About.close();
+                                    if (aevent.key.code == Keyboard::Escape)
+                                    {
+                                        Options.close();
+                                    }
                                 }
                             }
+                            Options.clear();
+                            About.close();
+                            Play.close();
+                            Options.draw(MenuBackground);
+                            Options.display();
+
                         }
 
-                        Play.close();
-                        //Options.clear();
-                        About.clear();
-                        About.draw(MenuBackground);
-                        About.draw(HighScore);
-                        About.display();
+                        break;
+                    }
+                    x == 1;*/
+                    if (x == 1) {
+                        while (About.isOpen())
+                        {
+                            Event aevent;
+                            while (About.pollEvent(aevent))
+                            {
+                                if (aevent.type == Event::Closed) {
+                                    About.close();
+                                }
+                                if (aevent.type == Event::KeyPressed)
+                                {
+                                    if (aevent.key.code == Keyboard::Escape)
+                                    {
+                                        About.close();
+                                    }
+                                }
+                            }
+
+                            Play.close();
+                            //Options.clear();
+                            About.clear();
+                            About.draw(MenuBackground);
+                            //About.draw(HighScore);
+                            About.display();
+                        }
+                    }
+                    if (x == 2) {
+                        MENU.close();
+                        break;
                     }
                 }
-                if (x == 2) {
-                    MENU.close();
-                    break;
-                }
             }
+
+
+            MENU.clear();
+            MENU.draw(MenuBackground);
+            mainMenu.draw(MENU);
+            MENU.display();
         }
-
-
-        MENU.clear();
-        MENU.draw(MenuBackground);
-        mainMenu.draw(MENU);
-        MENU.display();
     }
-
 
     return 0;
 
