@@ -8,30 +8,30 @@ MainMenu::MainMenu(float width, float height)
 	//Play
 	mainMenu[0].setFont(font);
 	mainMenu[0].setFillColor(Color::White);
-	mainMenu[0].setString("Normal Mode");
+	mainMenu[0].setString("Play");
 	mainMenu[0].setCharacterSize(70);
 	mainMenu[0].setPosition(400, 300);
 
-	////Options
-	//mainMenu[1].setFont(font);
-	//mainMenu[1].setFillColor(Color::White);
-	//mainMenu[1].setString("Hard Mode");
-	//mainMenu[1].setCharacterSize(70);
-	//mainMenu[1].setPosition(500, 400);
-
-	//Instructions
+	//Options
 	mainMenu[1].setFont(font);
 	mainMenu[1].setFillColor(Color::White);
 	mainMenu[1].setString("Instructions");
 	mainMenu[1].setCharacterSize(70);
 	mainMenu[1].setPosition(400, 400);
 
-	//Exit
+	//Instructions
 	mainMenu[2].setFont(font);
 	mainMenu[2].setFillColor(Color::White);
-	mainMenu[2].setString("Exit");
+	mainMenu[2].setString("High Score");
 	mainMenu[2].setCharacterSize(70);
 	mainMenu[2].setPosition(400, 500);
+
+	//Exit
+	mainMenu[3].setFont(font);
+	mainMenu[3].setFillColor(Color::White);
+	mainMenu[3].setString("Exit");
+	mainMenu[3].setCharacterSize(70);
+	mainMenu[3].setPosition(400, 600);
 
 	MainMenuSelected = -1;
 }

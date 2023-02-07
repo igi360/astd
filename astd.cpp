@@ -1,9 +1,10 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <time.h>
 #include <list>
-//#include <iostream>  //<------------streams hihi
+#include <iostream>  //<------------streams hihi
 #include "MainMenu.h"
 #include <stdexcept>
+#include <fstream>
 
 using namespace sf;
 using namespace std;
@@ -13,6 +14,8 @@ const int H = 800;
 
 float deg = 0.017453f;//convrsion from radians coef
 
+long int score = 0;
+int previousScore;
 
 class Animation
 {
@@ -227,16 +230,16 @@ bool isCollide(Entity* a, Entity* b)
 
 int main()
 {
-    
+    int counter = 0;
     srand(time(0));
     //rendering main window
     RenderWindow MENU(VideoMode(1200, 800), "Main Menu", Style::Default);
     MainMenu mainMenu(MENU.getSize().x, MENU.getSize().y);
 
-    
-   
-//space for loading graphics
-    Texture t1, t2, t3, t4, t5, t6, t7,t8;
+
+
+    //space for loading graphics
+    Texture t1, t2, t3, t4, t5, t6, t7, t8;
     t1.loadFromFile("spaceship.png");
     t2.loadFromFile("background.jpg");
     t3.loadFromFile("explosions/type_C.png");
@@ -246,9 +249,25 @@ int main()
     t6.loadFromFile("rock_small.png");
     t7.loadFromFile("explosions/type_B.png");
     t8.loadFromFile("MainMenuBackground.jpg");
-
+    Font fnt;
+    fnt.loadFromFile("arial.ttf");
     t1.setSmooth(true);
     t2.setSmooth(true);
+    
+    Text HighScore;
+    HighScore.setFont(fnt);
+    HighScore.setString("High Score: " + to_string(previousScore));
+    HighScore.setCharacterSize(50);
+    HighScore.setPosition(400, 400);
+    HighScore.setFillColor(Color::Red);
+
+    Text Score;
+    Score.setFont(fnt);
+    //Score.setString("Your Score: " + to_string(score));
+    Score.setCharacterSize(25);
+    Score.setPosition(40, 40);
+    Score.setFillColor(Color::Red);
+
     //Animations stuff
     Sprite background(t2);
     Sprite MenuBackground(t8);
@@ -270,10 +289,10 @@ int main()
         a->settings(sRock, rand() % W, rand() % H, rand() % 360, 25);
         entities.push_back(a);
     }
-    int u1=1, u2 = 1;
+    int u1 = 1, u2 = 1;
     try                                                //<----------------eception catch
     {
-        cout << divide(u1, u2) << std::endl;
+       cout << divide(u1, u2) << std::endl;
     }
     catch (const range_error& e)
     {
@@ -284,7 +303,7 @@ int main()
     entities.push_back(p);
     bullet mode;
     int newValue;
-    
+
     /////main loop/////
     while (MENU.isOpen()) {
         Event event;
@@ -306,21 +325,21 @@ int main()
                 if (event.key.code == Keyboard::Return) {
                     RenderWindow Play(VideoMode(1200, 800), "Asteroids");
                     Play.setFramerateLimit(60);
-                    RenderWindow Options(VideoMode(1200, 800), "Options");
-                    RenderWindow About(VideoMode(1200, 800), "Instructions");
+                    RenderWindow Options(VideoMode(1200, 800), "Instructions");
+                    RenderWindow About(VideoMode(1200, 800), "High Score");
 
                     int x = mainMenu.MainMenuPressed();
 
-                    if (x==0) {
-                       
-                       // bullet.update *g = 1;
-                       // g ->update();
-                          // g=inputValue
-                        
-                        /*if (x == 0)
-                        {
-                            mode.setValue(0);
-                        }*/
+                    if (x == 0) {
+
+                        // bullet.update *g = 1;
+                        // g ->update();
+                           // g=inputValue
+
+                         /*if (x == 0)
+                         {
+                             mode.setValue(0);
+                         }*/
                         while (Play.isOpen())
                         {
                             Event aevent;
@@ -329,11 +348,12 @@ int main()
                                 if (aevent.type == Event::Closed) {
                                     Play.close();
                                 }
+                                counter++;
                                 if (aevent.type == Event::KeyPressed)
                                 {
                                     if (aevent.key.code == Keyboard::Escape)
                                     {
-                                        int GameMode = 0;
+                                        
                                         Play.close();
                                     }
 
@@ -345,21 +365,21 @@ int main()
                                     }
                                 }
                             }
-                            if (x == 1) {
-                                
-                            }
+                            
                             if (Keyboard::isKeyPressed(Keyboard::Right)) p->angle += 3;
                             if (Keyboard::isKeyPressed(Keyboard::Left))  p->angle -= 3;
                             if (Keyboard::isKeyPressed(Keyboard::Up)) p->thrust = true;
                             else p->thrust = false;
 
-
+                            Score.setString("Your Score: " + to_string(score));
                             for (auto a : entities)
                                 for (auto b : entities)
                                 {
                                     if (a->name == "asteroid" && b->name == "bullet")
                                         if (isCollide(a, b))
                                         {
+
+                                            
                                             a->life = false;
                                             b->life = false;
 
@@ -376,7 +396,30 @@ int main()
                                                 e->settings(sRock_small, a->x, a->y, rand() % 360, 15);
                                                 entities.push_back(e);
                                             }
+                                            score = score + 50;                              //<----------High score
+                                            ifstream input_file("score.txt");
 
+                                            if (input_file.is_open())
+                                            {
+                                                input_file >> previousScore;
+
+                                                input_file.close();
+                                            }
+
+
+
+
+                                            if (score > previousScore)
+                                            {
+                                                ofstream output_file("score.txt", ofstream::trunc);
+
+                                                if (output_file.is_open())
+                                                {
+                                                    output_file << score;
+                                                    output_file.close();
+                                                }
+                                                
+                                            }
                                         }
 
                                     if (a->name == "player" && b->name == "asteroid")
@@ -422,19 +465,22 @@ int main()
                             }
 
 
+
+
                             //draw
 
                             Play.draw(background);
+                            Play.draw(Score);
                             for (auto i : entities) i->draw(Play);
                             Play.display();
                             Options.close();
                             About.close();
                             Play.clear();
                         }
-
                     }
-                    /* if (x == 0) {
-                        int GameMode = 0;
+
+                    if (x == 1) {
+                        //int GameMode = 0;
                         while (Options.isOpen())
                         {
                             Event aevent;
@@ -456,13 +502,22 @@ int main()
                             Play.close();
                             Options.draw(MenuBackground);
                             Options.display();
-                            
+
                         }
-                       
+
                         break;
                     }
-                    x == 1;*/
-                    if (x == 1) {
+
+                    if (x == 2) {
+                        ifstream input_file("score.txt");
+                        if (input_file.is_open())
+                        {
+                            input_file >> previousScore;
+
+                            input_file.close();
+                        }
+                        cout << previousScore;
+                        HighScore.setString("High Score: " + to_string(previousScore));
                         while (About.isOpen())
                         {
                             Event aevent;
@@ -478,28 +533,36 @@ int main()
                                         About.close();
                                     }
                                 }
+                                
+
+                                
                             }
+                            
+                           
                             Play.close();
                             Options.clear();
                             About.clear();
                             About.draw(MenuBackground);
+                            About.draw(HighScore);
+                            //input_file.close();
                             About.display();
                         }
                     }
-                    if (x == 2) {
+                    if (x == 3) {
                         MENU.close();
                         break;
                     }
                 }
             }
-            
+
         }
-        MENU.clear();
-        MENU.draw(MenuBackground);
-        mainMenu.draw(MENU);
-        MENU.display();
-
-
+            MENU.clear();
+            MENU.draw(MenuBackground);
+            mainMenu.draw(MENU);
+            MENU.display();
+        
     }
+
     return 0;
+
 }
