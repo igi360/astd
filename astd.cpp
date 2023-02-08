@@ -40,7 +40,7 @@ public:
     }
 
 
-    void update()
+    virtual void update()//                             <-------------declaration of virtusl function
     {
         Frame += speed;
         int n = frames.size();
@@ -56,7 +56,7 @@ public:
 };
 
 //objects class
-class Entity
+class Entity: public Animation
 {
 public:
     float x, y, dx, dy, R, angle;
@@ -77,7 +77,7 @@ public:
         R = radius;
     }
 
-    virtual void update() {};
+     void update() {}; //                                   <------polimorphism call
     //setting up hitboxes
     void draw(RenderWindow& app)
     {
@@ -101,7 +101,7 @@ public:
 };
 //movement of asteroids
 
-class asteroid : public Entity                     //<----Using classes is called polimorphism
+class asteroid : public Entity                     
 {
 public:
     asteroid()
@@ -130,7 +130,7 @@ double divide(int u1, int u2)                   //exeption part1
     return u1 / u2;
 }
 //trajectory for bullet
-class bullet : public Entity//, public MainMenu
+class bullet : public Entity//, public MainMenu        <-----------inharitance
 {
 
 private:
@@ -178,12 +178,12 @@ public:
 };
 
 //trajectory of player
-class player : public Entity
+class player : public Entity 
 {
 public:
     bool thrust;
 
-    player()                                              //<--------------using constructors is called multiple inharitance
+    player()                                             
     {
         name = "player";
     }
@@ -479,8 +479,8 @@ int main()
                         }
                     }
 
-                    if (x == 1) {
-                        //int GameMode = 0;
+                    /*if (x == 1) {
+                        
                         while (Options.isOpen())
                         {
                             Event aevent;
@@ -506,9 +506,9 @@ int main()
                         }
 
                         break;
-                    }
+                    }*/
 
-                    if (x == 2) {
+                    if (x == 1) {
                         ifstream input_file("score.txt");
                         if (input_file.is_open())
                         {
@@ -548,7 +548,7 @@ int main()
                             About.display();
                         }
                     }
-                    if (x == 3) {
+                    if (x == 2) {
                         MENU.close();
                         break;
                     }
